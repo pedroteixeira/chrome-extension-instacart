@@ -3,8 +3,9 @@ console.log('instacart extension script injected!');
 var apolloState = JSON.parse(decodeURIComponent(document.getElementById("node-apollo-state").textContent));
 
 var buyItAgainPageViewId = 'a7f8235f-70ff-5fb5-8039-b5a03702307f';
-var postalCode = "77077"; // Using the postal code from your prompt
-var zoneId = "982"; // Using the zoneId from your prompt
+var lastLocation = apolloState['GetLastUserLocation:258ced0']['{}']['lastUserLocation'];
+var postalCode = lastLocation['postalCode']  
+var zoneId = lastLocation['zoneId'] ; // Using the zoneId from your prompt
 
 var allShops = apolloState['Shop:f928c71'];
 
