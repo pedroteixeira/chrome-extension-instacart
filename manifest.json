@@ -1,0 +1,27 @@
+{
+    "name": "Instacart Extension",
+    "description": "Base Level Extension",
+    "version": "1.0",
+    "manifest_version": 3,
+    "host_permissions": [
+        "https://instacart.com/*",
+        "https://www.instacart.com/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_title": "Instacart ",
+        "default_icon": "instacart.png"
+    },
+    "side_panel": {
+        "default_path": "sidepanel.html"
+    },
+    "permissions": [
+        "tabs",
+        "activeTab",
+        "scripting",
+        "storage",
+        "sidePanel"
+    ]
+}
