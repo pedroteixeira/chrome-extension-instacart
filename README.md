@@ -1,6 +1,8 @@
 
-Instacart Chrome Extension
+**WARNING** This is under development and it may not work at all in your machine.
 
+
+# Instacart Chrome Extension
 
 - "Load unpacked" this directory in chrome://extensions/
 
