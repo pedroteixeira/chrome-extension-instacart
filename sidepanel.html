@@ -1,130 +1,29 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-
 <head>
-    <title>Instacart price comparison</title>
-    <script src="sidepanel.js"></script>
-    <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            overflow: hidden;
-            /* Prevent body scroll */
-        }
-
-        body {
-            font-family: sans-serif;
-            display: flex;
-        }
-
-        #content-wrapper {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        #category-nav {
-            width: 180px;
-            flex-shrink: 0;
-            border-left: 1px solid #ccc;
-            overflow-y: auto;
-            background-color: #f9f9f9;
-        }
-
-        #category-nav h3 {
-            margin: 0;
-            padding: 10px;
-            background-color: #f2f2f2;
-            font-size: 16px;
-            border-bottom: 1px solid #ccc;
-            position: sticky;
-            top: 0;
-        }
-
-        #category-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .item-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        .item-table th,
-        .item-table td {
-            font-size: 14px;
-            font-family: system-ui;
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        .item-table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        .item-table .item-cell {
-            width: 30%;
-        }
-
-        .item-image {
-            width: 100px;
-            max-height: 100px;
-            object-fit: contain;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        h2 {
-            margin-top: 20px;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 5px;
-            position: sticky;
-            top: 0;
-            background-color: white;
-            padding-top: 10px;
-        }
-
-        .lowest-price {
-            background-color: #dff0d8;
-            /* A light, pleasant green */
-            font-weight: normal;
-            border: 2px solid #8ec28e;
-        }
-
-        #category-list a {
-            display: block;
-            padding: 8px 10px;
-            text-decoration: none;
-            color: #333;
-            font-size: 13px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            border-bottom: 1px solid #eee;
-        }
-
-        #category-list a:hover {
-            background-color: #e9e9e9;
-        }
-    </style>
+    <title>Instacart Price Comparison</title>
+    <link rel="stylesheet" href="sidepanel.css">
 </head>
-
 <body>
-    <div id="content-wrapper">
-        <div id="content">Loading...</div>
+    <div class="header">
+        <h1>Price Comparison</h1>
+        <div id="search-container">
+            <input type="text" id="search-box" placeholder="Filter items by name...">
+        </div>
     </div>
-    <nav id="category-nav">
-        <h3>Categories</h3>
-        <ul id="category-list"></ul>
-    </nav>
-</body>
 
+    <div class="main-content">
+        <div id="content-wrapper">
+            <div id="content">
+                <p>Loading item data...</p>
+            </div>
+        </div>
+        <nav id="category-nav">
+            <ul id="category-list">
+                <!-- Category links will be injected here -->
+            </ul>
+        </nav>
+    </div>
+    <script src="sidepanel.js"></script>
+</body>
 </html>

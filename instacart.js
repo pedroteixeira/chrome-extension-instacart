@@ -330,7 +330,7 @@ function groupShopItems(shopItems) {
     var shopItems = await fetchAllShopItems(searchingShops, buyItAgainPageViewId);
     const { retailers, itemsByCategory } = groupShopItems(shopItems);
 
-    window.sidePanelContent = { apolloState, retailers, itemsByCategory, postalCode, zoneId }
+    window.sidePanelContent = { apolloState, retailers, itemsByCategory, postalCode, zoneId, shopItems }
 
     // send message to side panel
 

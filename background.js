@@ -1,4 +1,4 @@
-const TARGET_ORIGIN = 'https://www.instacart.com';
+const INSTACART_HOSTNAME = 'instacart.com';
 
 // Allows users to open the side panel by clicking on the action toolbar icon
 chrome.sidePanel
@@ -8,13 +8,12 @@ chrome.sidePanel
 chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
   if (!tab.url) return;
   const url = new URL(tab.url);
-  console.log(url.origin)
 
-  // Enables the side panel on google.com
-  if (url.origin === TARGET_ORIGIN) {
+  // Enables the side panel on instacart.com
+  if (url.hostname === INSTACART_HOSTNAME || url.hostname.includes(`.${INSTACART_HOSTNAME}`)) {
     await chrome.sidePanel.setOptions({
       tabId,
-      path: 'sidepanel.html',
+      path: 'sidepanel.html', // Make sure this path is correct
       enabled: true
     });
   } else {
