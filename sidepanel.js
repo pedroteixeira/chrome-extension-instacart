@@ -319,7 +319,7 @@ function filterItems(searchText) {
 }
 
 // Add event listener for the search box
-const searchBox = document.getElementById('search-box');
+var searchBox = document.getElementById('search-box');
 if (searchBox) {
     searchBox.addEventListener('input', (e) => filterItems(e.target.value));
 }
@@ -330,7 +330,7 @@ if (searchBox) {
  * It handles clicks on category links and performs a smooth scroll to the
  * corresponding section, calculating the position manually for reliability.
  */
-const categoryNavContainer = document.getElementById('category-list');
+var categoryNavContainer = document.getElementById('category-list');
 if (categoryNavContainer) { // This listener is on the <ul> now
     categoryNavContainer.addEventListener('click', function (e) {
         // Ensure the clicked element is a link within the navigation

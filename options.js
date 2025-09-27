@@ -60,13 +60,13 @@ function renderRetailerList(allRetailers, savedRetailers) {
 async function initialize() {
     // Fetch all available retailers from local storage and saved preferences from sync storage.
     // This is done in parallel for efficiency.
-    const [localData, syncData] = await Promise.all([
+    var [localData, syncData] = await Promise.all([
         chrome.storage.local.get(ALL_RETAILERS_KEY),
         chrome.storage.sync.get(RETAILER_SETTINGS_KEY)
     ]);
 
     let allRetailers = localData[ALL_RETAILERS_KEY] || [];
-    const savedRetailers = syncData[RETAILER_SETTINGS_KEY] || [];
+    var savedRetailers = syncData[RETAILER_SETTINGS_KEY] || [];
 
     if (allRetailers.length > 0) {
         renderRetailerList(allRetailers, savedRetailers);
@@ -74,7 +74,7 @@ async function initialize() {
         // Fallback: if not in local storage, try to get it from an active Instacart tab
         const [tab] = await chrome.tabs.query({ active: true, url: "*://*.instacart.com/*" });
         if (tab) {
-            const [result] = await chrome.scripting.executeScript({
+            var [result] = await chrome.scripting.executeScript({
                 target: { tabId: tab.id },
                 files: ['get_retailers.js']
             });

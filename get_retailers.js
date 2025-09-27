@@ -4,9 +4,9 @@
  */
 (() => {
     try {
-        const apolloState = JSON.parse(document.getElementById("node-apollo-state").textContent);
-        const allShops = apolloState['Shop:f928c71'];
-        const retailerNames = new Set();
+        var apolloState = JSON.parse(document.getElementById("node-apollo-state").textContent);
+        var allShops = apolloState['Shop:f928c71'];
+        var retailerNames = new Set();
 
         Object.values(allShops).forEach(shopWrapper => {
             retailerNames.add(shopWrapper.shop.retailer.name);

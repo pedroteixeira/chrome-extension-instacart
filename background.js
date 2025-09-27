@@ -1,9 +1,9 @@
-const INSTACART_HOSTNAME = 'instacart.com';
+var INSTACART_HOSTNAME = 'instacart.com';
 
 chrome.action.onClicked.addListener(async (tab) => {
   if (!tab.url) return;
-  const url = new URL(tab.url);
-  const isInstacartPage = url.hostname === INSTACART_HOSTNAME || url.hostname.includes(`.${INSTACART_HOSTNAME}`);
+  var url = new URL(tab.url);
+  var isInstacartPage = url.hostname === INSTACART_HOSTNAME || url.hostname.includes(`.${INSTACART_HOSTNAME}`);
 
   if (isInstacartPage) {
     // Programmatically open the side panel on the current tab.
@@ -13,7 +13,7 @@ chrome.action.onClicked.addListener(async (tab) => {
 
 chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
   if (!tab.url) return;
-  const url = new URL(tab.url);
+  var url = new URL(tab.url);
 
   // Enables the side panel on instacart.com
   if (url.hostname === INSTACART_HOSTNAME || url.hostname.includes(`.${INSTACART_HOSTNAME}`)) {

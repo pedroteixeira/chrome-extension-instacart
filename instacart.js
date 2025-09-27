@@ -336,10 +336,10 @@ function groupShopItems(shopItems) {
 (async () => {
 
     // --- New logic to determine which shops to search ---
-    const myRetailersNames = await getRetailerNamesToSearch();
-    const searchServiceType = "delivery";
-    const searchingShops = [];
-    const allAvailableRetailers = new Set();
+    var myRetailersNames = await getRetailerNamesToSearch();
+    var searchServiceType = "delivery";
+    var searchingShops = [];
+    var allAvailableRetailers = new Set();
 
     Object.values(allShops).forEach(shopWrapper => {
         const shop = shopWrapper.shop;
@@ -367,7 +367,7 @@ function groupShopItems(shopItems) {
     });
 
     var shopItems = await fetchAllShopItems(searchingShops, buyItAgainPageViewId);
-    const { retailers, itemsByCategory } = groupShopItems(shopItems);
+    var { retailers, itemsByCategory } = groupShopItems(shopItems);
 
     // Send final message with all the data for rendering
     await chrome.runtime.sendMessage({
