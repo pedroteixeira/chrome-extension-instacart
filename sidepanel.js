@@ -225,15 +225,54 @@ function displayItemsInTables({ retailers, itemsByCategory, shopItems }, contain
 
 }
 
+/**
+ * Renders the initial loading state, showing each retailer with a spinner.
+ * @param {string[]} retailers - An array of retailer names being fetched.
+ */
+function displayLoadingProgress(retailers) {
+    const container = document.getElementById('content');
+    if (!container) return;
+
+    let progressHtml = '<h2>Loading Item Data...</h2><ul id="retailer-progress-list">';
+    retailers.forEach(retailer => {
+        // Use a sanitized version of the retailer name for the ID
+        const retailerId = `progress-${retailer.replace(/[^a-zA-Z0-9]/g, '')}`;
+        progressHtml += `
+            <li id="${retailerId}">
+                <span class="retailer-name">${retailer}</span>
+                <span class="status-icon spinner"></span>
+            </li>
+        `;
+    });
+    progressHtml += '</ul>';
+    container.innerHTML = progressHtml;
+}
+
+/**
+ * Updates the status for a single retailer in the progress list.
+ * @param {string} retailer - The name of the retailer that has finished loading.
+ * @param {number} itemCount - The number of items found for that retailer.
+ */
+function updateRetailerProgress(retailer, itemCount) {
+    const retailerId = `progress-${retailer.replace(/[^a-zA-Z0-9]/g, '')}`;
+    const element = document.getElementById(retailerId);
+    if (!element) return;
+
+    const statusIcon = element.querySelector('.status-icon');
+    statusIcon.classList.remove('spinner');
+    statusIcon.classList.add('checkmark');
+    statusIcon.textContent = `\u2713 (${itemCount} items)`;
+}
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log("Message received in side panel:", request);
 
-    if (request.itemsByCategory && request.shopItems) {
-        displayItemsInTables(request, 'content');
-    } else {
-        const contentDiv = document.getElementById('content');
-        contentDiv.textContent = "No shop items data received.";
+    if (request.type === 'loading-started') {
+        displayLoadingProgress(request.retailers);
+    } else if (request.type === 'retailer-loaded') {
+        updateRetailerProgress(request.retailer, request.itemCount);
+    } else if (request.type === 'loading-complete' && request.data) {
+        displayItemsInTables(request.data, 'content');
     }
 });
 

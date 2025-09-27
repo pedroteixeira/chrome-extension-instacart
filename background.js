@@ -1,9 +1,15 @@
 const INSTACART_HOSTNAME = 'instacart.com';
 
-// Allows users to open the side panel by clicking on the action toolbar icon
-chrome.sidePanel
-  .setPanelBehavior({ openPanelOnActionClick: true })
-  .catch((error) => console.error(error));
+chrome.action.onClicked.addListener(async (tab) => {
+  if (!tab.url) return;
+  const url = new URL(tab.url);
+  const isInstacartPage = url.hostname === INSTACART_HOSTNAME || url.hostname.includes(`.${INSTACART_HOSTNAME}`);
+
+  if (isInstacartPage) {
+    // Programmatically open the side panel on the current tab.
+    await chrome.sidePanel.open({ tabId: tab.id });
+  }
+});
 
 chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
   if (!tab.url) return;

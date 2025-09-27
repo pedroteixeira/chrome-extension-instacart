@@ -1,27 +1,26 @@
 {
-    "name": "Instacart Extension",
-    "description": "Base Level Extension",
+    "name": "Instacart Price Comparison",
+    "description": "Compares prices of items across different Instacart retailers.",
     "version": "1.0",
     "manifest_version": 3,
     "host_permissions": [
-        "https://instacart.com/*",
         "https://www.instacart.com/*"
     ],
+    "icons": {
+        "128": "instacart_logo.png"
+    },
     "background": {
         "service_worker": "background.js"
     },
     "action": {
-        "default_title": "Instacart ",
+        "default_title": "Instacart Price Comparison",
         "default_icon": "instacart.png"
     },
-    "side_panel": {
-        "default_path": "sidepanel.html"
-    },
+    "options_page": "options.html",
     "permissions": [
-        "tabs",
-        "activeTab",
+        "sidePanel",
         "scripting",
-        "storage",
-        "sidePanel"
+        "tabs",
+        "storage"
     ]
 }

@@ -1,28 +1,31 @@
 console.log('instacart extension script injected!');
 
 var apolloState = JSON.parse(decodeURIComponent(document.getElementById("node-apollo-state").textContent));
-
 var buyItAgainPageViewId = 'a7f8235f-70ff-5fb5-8039-b5a03702307f';
 var lastLocation = apolloState['GetLastUserLocation:258ced0']['{}']['lastUserLocation'];
 var postalCode = lastLocation['postalCode']  
 var zoneId = lastLocation['zoneId'] ; // Using the zoneId from your prompt
-
 var allShops = apolloState['Shop:f928c71'];
 
+var RETAILER_SETTINGS_KEY = 'instacart_selected_retailers';
+var ALL_RETAILERS_KEY = 'instacart_all_retailers';
 
-var myRetailersNames = new Set(['H-E-B', 'Kroger', 'Sprouts Farmers Market', 'ALDI']);
-var searchServiceType = "delivery";
-var searchingShops = [];
-
-Object.keys(allShops).forEach(shopKey => {
-    var shop = allShops[shopKey].shop;
-    if (shop.serviceType === searchServiceType && myRetailersNames.has(shop.retailer.name)) {
-        searchingShops.push(shop)
+/**
+ * Retrieves the list of retailers to search from chrome.storage.
+ * @returns {Promise<Set<string>>} A promise that resolves to a Set of retailer names.
+ */
+async function getRetailerNamesToSearch() {
+    const defaultRetailers = ['H-E-B', 'Kroger', 'Sprouts Farmers Market', 'ALDI'];
+    try {
+        const result = await chrome.storage.sync.get(RETAILER_SETTINGS_KEY);
+        const selectedRetailers = result[RETAILER_SETTINGS_KEY];
+        // If settings exist and have items, use them. Otherwise, use defaults.
+        return new Set(selectedRetailers && selectedRetailers.length > 0 ? selectedRetailers : defaultRetailers);
+    } catch (e) {
+        console.error("Error fetching retailer settings, using defaults:", e);
+        return new Set(defaultRetailers);
     }
-});
-
-
-console.log('searchingShops', searchingShops);
+}
 
 /**
  * Creates a delay for a specified number of milliseconds.
@@ -263,6 +266,13 @@ async function fetchAllShopItems(shops, pageViewId) {
 
             console.log(`Found total of ${allItemsForShop.length} items for ${shop.retailer.name}`);
 
+            // Send progress update to the side panel
+            await chrome.runtime.sendMessage({
+                type: 'retailer-loaded',
+                retailer: shop.retailer.name,
+                itemCount: allItemsForShop.length
+            });
+
             allShopItems.push({ shopId, retailer: shop.retailer.name, items: allItemsForShop, error: null });
         } catch (error) {
             console.error(`Failed to fetch or process data for shop ${shopId}:`, error);
@@ -325,16 +335,45 @@ function groupShopItems(shopItems) {
 
 (async () => {
 
+    // --- New logic to determine which shops to search ---
+    const myRetailersNames = await getRetailerNamesToSearch();
+    const searchServiceType = "delivery";
+    const searchingShops = [];
+    const allAvailableRetailers = new Set();
+
+    Object.values(allShops).forEach(shopWrapper => {
+        const shop = shopWrapper.shop;
+        allAvailableRetailers.add(shop.retailer.name); // Collect all retailer names
+        if (shop.serviceType === searchServiceType && myRetailersNames.has(shop.retailer.name)) {
+            searchingShops.push(shop);
+        }
+    });
+
+    // Save the full list of retailers for the options page to use.
+    // We use local storage here as it's larger and specific to this machine.
+    await chrome.storage.local.set({ [ALL_RETAILERS_KEY]: Array.from(allAvailableRetailers) });
+
+    console.log('All available retailers:', Array.from(allAvailableRetailers));
+    console.log('Retailers selected for search:', Array.from(myRetailersNames));
+    console.log('Shops to be searched:', searchingShops);
+    // --- End of new logic ---
+
     await clearOldCache();
+
+    // Send initial message to side panel to show loading state
+    await chrome.runtime.sendMessage({
+        type: 'loading-started',
+        retailers: searchingShops.map(s => s.retailer.name)
+    });
 
     var shopItems = await fetchAllShopItems(searchingShops, buyItAgainPageViewId);
     const { retailers, itemsByCategory } = groupShopItems(shopItems);
 
-    window.sidePanelContent = { apolloState, retailers, itemsByCategory, postalCode, zoneId, shopItems }
-
-    // send message to side panel
-
-    await chrome.runtime.sendMessage(window.sidePanelContent)
+    // Send final message with all the data for rendering
+    await chrome.runtime.sendMessage({
+        type: 'loading-complete',
+        data: { retailers, itemsByCategory, shopItems }
+    });
 
     console.log('sidePanelContent', window.sidePanelContent)
 

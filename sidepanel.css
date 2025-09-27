@@ -70,8 +70,8 @@ h1 {
 #content-wrapper {
     flex-grow: 1;
     overflow-y: auto;
-    padding-right: 15px;
-    border-right: 1px solid #ddd;
+    padding-left: 15px;
+    min-width: 0; /* Fix for flexbox overflow issue, allows tables to shrink correctly */
 }
 
 /* Table styles from your original code */
@@ -79,6 +79,7 @@ h1 {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    table-layout: fixed; /* This is the key for aligned columns */
 }
 
 .item-table th, .item-table td {
@@ -86,6 +87,7 @@ h1 {
     padding: 8px;
     text-align: left;
     vertical-align: middle;
+    word-wrap: break-word; /* Prevents long words from breaking layout */
 }
 
 .item-table th {
@@ -107,6 +109,16 @@ h1 {
 .lowest-price {
     background-color: #d4edda; /* A light green to indicate the best price */
     font-weight: bold;
+}
+
+.global-stats-table td {
+    text-align: center;
+}
+
+/* Set width for the first column (Item) in the main tables */
+.item-table:not(.global-stats-table) th:not(:first-child),
+.item-table:not(.global-stats-table) td:not(:first-child) {
+    width: 50px;
 }
 
 .global-stats-table td {
